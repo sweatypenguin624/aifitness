@@ -2,14 +2,14 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Dumbbell, Zap, Brain, TrendingUp } from "lucide-react";
+import { Dumbbell, Brain, TrendingUp } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
 
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-500">
-      <div className="container mx-auto px-6 py-8 max-w-6xl">
-        <div className="absolute top-8 right-6 z-50">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-6xl">
+        <div className="absolute top-4 sm:top-8 right-4 sm:right-6 z-50">
           <ModeToggle />
         </div>
 
@@ -17,13 +17,13 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="min-h-screen flex flex-col justify-center items-center text-center"
+          className="min-h-screen flex flex-col justify-center items-center text-center px-4"
         >
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-6xl md:text-7xl font-light mb-6 tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light mb-4 sm:mb-6 tracking-tight"
           >
             AI Fitness Coach
           </motion.h1>
@@ -32,7 +32,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg md:text-xl text-neutral-500 dark:text-neutral-400 font-light max-w-2xl mb-12"
+            className="text-base sm:text-lg md:text-xl text-neutral-500 dark:text-neutral-400 font-light max-w-2xl mb-8 sm:mb-12 px-4"
           >
             Personalized workout and diet plans powered by artificial intelligence.
             Minimal. Intelligent. Effective.
@@ -45,7 +45,7 @@ export default function LandingPage() {
           >
             <Link
               href="/app"
-              className="inline-block px-12 py-4 bg-black dark:bg-white text-white dark:text-black text-sm font-light tracking-wide hover:opacity-80 transition-opacity duration-300"
+              className="inline-block px-8 sm:px-12 py-3 sm:py-4 bg-black dark:bg-white text-white dark:text-black text-sm font-light tracking-wide hover:opacity-80 transition-opacity duration-300"
             >
               Get Started
             </Link>
@@ -55,9 +55,9 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-32 max-w-4xl"
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 mt-16 sm:mt-32 max-w-4xl w-full"
           >
-            <div className="text-center">
+            <div className="text-center px-4">
               <div className="flex justify-center mb-4">
                 <Brain className="w-8 h-8 text-neutral-400" />
               </div>
@@ -67,7 +67,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="text-center">
+            <div className="text-center px-4">
               <div className="flex justify-center mb-4">
                 <Dumbbell className="w-8 h-8 text-neutral-400" />
               </div>
@@ -77,7 +77,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="text-center">
+            <div className="text-center px-4">
               <div className="flex justify-center mb-4">
                 <TrendingUp className="w-8 h-8 text-neutral-400" />
               </div>

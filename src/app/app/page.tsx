@@ -58,17 +58,17 @@ export default function AppPage() {
 
     return (
         <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-500">
-            <div className="container mx-auto px-6 py-8 max-w-6xl relative">
-                <div className="absolute top-8 right-6 z-50">
+            <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-6xl relative">
+                <div className="absolute top-4 sm:top-8 right-4 sm:right-6 z-50">
                     <ModeToggle />
                 </div>
 
-                <header className="text-center mb-16 mt-8">
+                <header className="text-center mb-8 sm:mb-16 mt-12 sm:mt-8">
                     <motion.h1
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
-                        className="text-5xl md:text-6xl font-light mb-3 tracking-tight"
+                        className="text-4xl sm:text-5xl md:text-6xl font-light mb-3 tracking-tight"
                     >
                         AI Fitness Coach
                     </motion.h1>
@@ -93,28 +93,28 @@ export default function AppPage() {
                             transition={{ duration: 0.4 }}
                             className="space-y-8"
                         >
-                            <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-12">
-                                <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-3 sm:gap-4 mb-8 sm:mb-12">
+                                <div className="flex flex-wrap items-center justify-center gap-2">
                                     <button
                                         onClick={() => setActiveTab("workout")}
-                                        className={`px-8 py-3 text-sm font-light tracking-wide transition-all duration-300 ${activeTab === "workout"
+                                        className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 text-sm font-light tracking-wide transition-all duration-300 ${activeTab === "workout"
                                             ? "bg-black dark:bg-white text-white dark:text-black"
                                             : "bg-transparent border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600"
                                             }`}
                                     >
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center justify-center gap-2">
                                             <Dumbbell className="w-4 h-4" />
                                             <span>Workout</span>
                                         </div>
                                     </button>
                                     <button
                                         onClick={() => setActiveTab("diet")}
-                                        className={`px-8 py-3 text-sm font-light tracking-wide transition-all duration-300 ${activeTab === "diet"
+                                        className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 text-sm font-light tracking-wide transition-all duration-300 ${activeTab === "diet"
                                             ? "bg-black dark:bg-white text-white dark:text-black"
                                             : "bg-transparent border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600"
                                             }`}
                                     >
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center justify-center gap-2">
                                             <Utensils className="w-4 h-4" />
                                             <span>Diet</span>
                                         </div>
@@ -122,6 +122,7 @@ export default function AppPage() {
                                     <button
                                         onClick={() => exportToPDF("plan-content", "fitness-plan")}
                                         className="px-6 py-3 text-sm font-light tracking-wide bg-transparent border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300"
+                                        aria-label="Export to PDF"
                                     >
                                         <Download className="w-4 h-4" />
                                     </button>
@@ -129,7 +130,7 @@ export default function AppPage() {
 
                                 <button
                                     onClick={() => setPlan(null)}
-                                    className="flex items-center gap-2 px-6 py-3 text-sm font-light border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300"
+                                    className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-light border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300"
                                 >
                                     <RefreshCw className="w-4 h-4" />
                                     <span>New Plan</span>
@@ -164,7 +165,7 @@ export default function AppPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="mt-16 p-8 border border-neutral-200 dark:border-neutral-800 text-center"
+                    className="mt-8 sm:mt-16 p-6 sm:p-8 border border-neutral-200 dark:border-neutral-800 text-center"
                 >
                     <div className="flex items-center justify-center gap-2 mb-3">
                         <Sparkles className="w-4 h-4 text-neutral-400" />
@@ -173,7 +174,7 @@ export default function AppPage() {
                         </h3>
                         <Sparkles className="w-4 h-4 text-neutral-400" />
                     </div>
-                    <p className="text-base font-light text-neutral-700 dark:text-neutral-300">
+                    <p className="text-sm sm:text-base font-light text-neutral-700 dark:text-neutral-300">
                         {dailyQuote || "Loading inspiration..."}
                     </p>
                 </motion.div>
