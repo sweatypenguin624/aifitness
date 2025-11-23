@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { DailyWorkout } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Loader2, ImageIcon, Volume2, VolumeX } from "lucide-react";
+import { X, Loader2, ImageIcon, Volume2, VolumeX, Zap } from "lucide-react";
 
 interface WorkoutPlanProps {
     plan: DailyWorkout[];
@@ -31,7 +31,7 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
             const res = await fetch("/api/image", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: `Minimalist black and white fitness photo of ${exerciseName} exercise, professional, clean` }),
+                body: JSON.stringify({ prompt: `Minimalist fitness photo of ${exerciseName} exercise, professional, clean` }),
             });
             const data = await res.json();
             setImageUrl(data.imageUrl);
@@ -68,12 +68,20 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-light">Workout Plan</h2>
-                <button
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="space-y-6"
+        >
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold gradient-text">Workout Plan</h2>
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                     onClick={handleSpeak}
-                    className="p-2 hover:opacity-60 transition-opacity duration-300"
+                    className="p-3 rounded-full gradient-primary text-white shadow-lg hover:shadow-xl transition-shadow"
                     aria-label="Read workout plan"
                 >
                     {isSpeaking ? (
@@ -81,35 +89,36 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
                     ) : (
                         <Volume2 className="w-5 h-5" />
                     )}
-                </button>
+                </motion.button>
             </div>
 
+            {/* Image Modal */}
             <AnimatePresence>
                 {selectedExercise && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/90 dark:bg-white/90 z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
                         onClick={() => setSelectedExercise(null)}
                     >
                         <motion.div
-                            initial={{ scale: 0.95 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0.95 }}
-                            className="bg-white dark:bg-black p-6 max-w-2xl w-full relative border border-neutral-200 dark:border-neutral-800"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-white dark:bg-neutral-900 rounded-2xl p-6 max-w-2xl w-full relative shadow-2xl"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button
                                 onClick={() => setSelectedExercise(null)}
-                                className="absolute top-4 right-4 p-2 hover:opacity-60 transition-opacity"
+                                className="absolute top-4 right-4 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
-                            <h3 className="text-xl font-light mb-4 pr-12">{selectedExercise}</h3>
-                            <div className="aspect-video bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center">
+                            <h3 className="text-xl font-bold mb-4 pr-12">{selectedExercise}</h3>
+                            <div className="aspect-video bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden">
                                 {loading ? (
-                                    <Loader2 className="w-8 h-8 animate-spin text-neutral-400" />
+                                    <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
                                 ) : imageUrl ? (
                                     <img src={imageUrl} alt={selectedExercise} className="w-full h-full object-cover" />
                                 ) : (
@@ -121,44 +130,64 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
                 )}
             </AnimatePresence>
 
-            {plan.map((day, index) => (
-                <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.3 }}
-                    className="border border-neutral-200 dark:border-neutral-800 p-6"
-                >
-                    <div className="flex justify-between items-start mb-6">
-                        <div>
-                            <h3 className="text-lg font-light">{day.day}</h3>
-                            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 uppercase tracking-wider">{day.focus}</p>
-                        </div>
-                    </div>
-                    <div className="space-y-3">
-                        {day.exercises.map((exercise, i) => (
-                            <div
-                                key={i}
-                                className="flex items-center justify-between p-4 border-b border-neutral-100 dark:border-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors duration-200 cursor-pointer group"
-                                onClick={() => handleExerciseClick(exercise.name)}
-                            >
-                                <div className="flex-1">
-                                    <h4 className="text-sm font-light">{exercise.name}</h4>
-                                    {exercise.notes && (
-                                        <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-1">{exercise.notes}</p>
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-4 text-xs text-neutral-500">
-                                    <span>{exercise.sets} × {exercise.reps}</span>
-                                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <ImageIcon className="w-4 h-4" />
-                                    </span>
-                                </div>
+            {/* Workout Days */}
+            <div className="grid gap-6">
+                {plan.map((day, index) => (
+                    <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.4 }}
+                        className="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-lg border border-neutral-200 dark:border-neutral-800 hover:shadow-xl transition-shadow"
+                    >
+                        {/* Day Header */}
+                        <div className="relative p-6 gradient-primary">
+                            <div className="relative z-10">
+                                <h3 className="text-xl font-bold text-white">{day.day}</h3>
+                                <p className="text-white/90 text-sm uppercase tracking-wider mt-1 flex items-center gap-2">
+                                    <Zap className="w-4 h-4" />
+                                    {day.focus}
+                                </p>
                             </div>
-                        ))}
-                    </div>
-                </motion.div>
-            ))}
-        </div>
+                        </div>
+
+                        {/* Exercises */}
+                        <div className="p-6 space-y-4">
+                            {day.exercises.map((exercise, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1 + i * 0.05 }}
+                                    onClick={() => handleExerciseClick(exercise.name)}
+                                    className="group relative p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 cursor-pointer transition-all duration-300 border border-transparent hover:border-purple-200 dark:hover:border-purple-800"
+                                >
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            <h4 className="font-semibold text-lg group-hover:gradient-text transition-all">
+                                                {i + 1}. {exercise.name}
+                                            </h4>
+                                            {exercise.notes && (
+                                                <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">{exercise.notes}</p>
+                                            )}
+                                            <div className="flex gap-4 mt-3 text-sm text-neutral-500 dark:text-neutral-500">
+                                                <span className="font-medium">Sets: {exercise.sets}</span>
+                                                <span className="font-medium">Reps: {exercise.reps}</span>
+                                                <span className="font-medium">Rest: {exercise.rest}</span>
+                                            </div>
+                                        </div>
+                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-4">
+                                            <div className="p-2 rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
+                                                <ImageIcon className="w-5 h-5 text-white" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+        </motion.div>
     );
 }

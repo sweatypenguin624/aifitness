@@ -6,9 +6,10 @@ import WorkoutPlan from "@/components/WorkoutPlan";
 import DietPlan from "@/components/DietPlan";
 import { GeneratedPlan, UserData } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dumbbell, Utensils, RefreshCw, Download, Sparkles } from "lucide-react";
+import { Dumbbell, Utensils, RefreshCw, Download, Sparkles, ArrowLeft } from "lucide-react";
 import { exportToPDF } from "@/lib/utils";
 import { ModeToggle } from "@/components/ModeToggle";
+import Link from "next/link";
 
 export default function AppPage() {
     const [plan, setPlan] = useState<GeneratedPlan | null>(null);
@@ -57,85 +58,143 @@ export default function AppPage() {
     };
 
     return (
-        <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-500">
-            <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 max-w-6xl relative">
-                <div className="absolute top-4 sm:top-8 right-4 sm:right-6 z-50">
+        <main className="min-h-screen bg-neutral-50 dark:bg-black text-black dark:text-white transition-colors duration-500">
+            {/* Navigation */}
+            <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800">
+                <div className="container mx-auto px-4 sm:px-6 py-4 max-w-7xl flex justify-between items-center">
+                    <Link href="/" className="flex items-center gap-2 text-lg font-bold gradient-text hover:opacity-80 transition-opacity">
+                        <ArrowLeft className="w-5 h-5" />
+                        AI Fitness Coach
+                    </Link>
                     <ModeToggle />
                 </div>
+            </nav>
 
-                <header className="text-center mb-8 sm:mb-16 mt-12 sm:mt-8">
-                    <motion.h1
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-4xl sm:text-5xl md:text-6xl font-light mb-3 tracking-tight"
-                    >
-                        AI Fitness Coach
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.6 }}
-                        className="text-sm md:text-base text-neutral-500 dark:text-neutral-400 font-light tracking-wide"
-                    >
-                        Personalized. Intelligent. Minimal.
-                    </motion.p>
-                </header>
-
+            <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-7xl">
                 <AnimatePresence mode="wait">
                     {!plan ? (
-                        <UserForm onSubmit={handleGenerate} isLoading={loading} />
+                        <motion.div
+                            key="form"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.4 }}
+                        >
+                            {/* Header */}
+                            <div className="text-center mb-12">
+                                <motion.h1
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.1 }}
+                                    className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4"
+                                >
+                                    Create Your <span className="gradient-text">Perfect Plan</span>
+                                </motion.h1>
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.2 }}
+                                    className="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto"
+                                >
+                                    Tell us about yourself and we'll create a personalized fitness journey just for you
+                                </motion.p>
+                            </div>
+
+                            <UserForm onSubmit={handleGenerate} isLoading={loading} />
+                        </motion.div>
                     ) : (
                         <motion.div
+                            key="plan"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.4 }}
                             className="space-y-8"
                         >
-                            <div className="flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-3 sm:gap-4 mb-8 sm:mb-12">
-                                <div className="flex flex-wrap items-center justify-center gap-2">
-                                    <button
-                                        onClick={() => setActiveTab("workout")}
-                                        className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 text-sm font-light tracking-wide transition-all duration-300 ${activeTab === "workout"
-                                            ? "bg-black dark:bg-white text-white dark:text-black"
-                                            : "bg-transparent border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600"
-                                            }`}
-                                    >
-                                        <div className="flex items-center justify-center gap-2">
-                                            <Dumbbell className="w-4 h-4" />
-                                            <span>Workout</span>
-                                        </div>
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab("diet")}
-                                        className={`flex-1 sm:flex-none px-6 sm:px-8 py-3 text-sm font-light tracking-wide transition-all duration-300 ${activeTab === "diet"
-                                            ? "bg-black dark:bg-white text-white dark:text-black"
-                                            : "bg-transparent border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600"
-                                            }`}
-                                    >
-                                        <div className="flex items-center justify-center gap-2">
-                                            <Utensils className="w-4 h-4" />
-                                            <span>Diet</span>
-                                        </div>
-                                    </button>
-                                    <button
-                                        onClick={() => exportToPDF(plan, "fitness-plan")}
-                                        className="px-6 py-3 text-sm font-light tracking-wide bg-transparent border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300"
-                                        aria-label="Export to PDF"
-                                    >
-                                        <Download className="w-4 h-4" />
-                                    </button>
-                                </div>
-
-                                <button
-                                    onClick={() => setPlan(null)}
-                                    className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-light border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300"
+                            {/* Header */}
+                            <div className="text-center mb-8">
+                                <motion.h1
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="text-4xl sm:text-5xl font-bold mb-2"
                                 >
-                                    <RefreshCw className="w-4 h-4" />
-                                    <span>New Plan</span>
-                                </button>
+                                    Your <span className="gradient-text">Personalized Plan</span>
+                                </motion.h1>
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.2 }}
+                                    className="text-neutral-600 dark:text-neutral-400"
+                                >
+                                    Crafted specifically for your goals and fitness level
+                                </motion.p>
                             </div>
+
+                            {/* Tab Navigation + Actions */}
+                            <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg p-6 border border-neutral-200 dark:border-neutral-800">
+                                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                                    {/* Tabs */}
+                                    <div className="relative flex bg-neutral-100 dark:bg-neutral-800 rounded-full p-1">
+                                        <motion.div
+                                            className="absolute inset-y-1 rounded-full gradient-primary"
+                                            initial={false}
+                                            animate={{
+                                                x: activeTab === "workout" ? 0 : "100%",
+                                            }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                            style={{ width: "calc(50% - 4px)" }}
+                                        />
+                                        <button
+                                            onClick={() => setActiveTab("workout")}
+                                            className={`relative z-10 px-8 py-3 text-sm font-medium rounded-full transition-colors ${activeTab === "workout"
+                                                    ? "text-white"
+                                                    : "text-neutral-600 dark:text-neutral-400"
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <Dumbbell className="w-4 h-4" />
+                                                <span>Workout</span>
+                                            </div>
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab("diet")}
+                                            className={`relative z-10 px-8 py-3 text-sm font-medium rounded-full transition-colors ${activeTab === "diet"
+                                                    ? "text-white"
+                                                    : "text-neutral-600 dark:text-neutral-400"
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <Utensils className="w-4 h-4" />
+                                                <span>Diet</span>
+                                            </div>
+                                        </button>
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-2">
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => exportToPDF(plan, "fitness-plan")}
+                                            className="p-3 rounded-full border border-neutral-300 dark:border-neutral-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors"
+                                            aria-label="Export to PDF"
+                                        >
+                                            <Download className="w-5 h-5" />
+                                        </motion.button>
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => setPlan(null)}
+                                            className="flex items-center gap-2 px-6 py-3 rounded-full border border-neutral-300 dark:border-neutral-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors"
+                                        >
+                                            <RefreshCw className="w-4 h-4" />
+                                            <span>New Plan</span>
+                                        </motion.button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Plan Content */}
                             <div id="plan-content">
                                 <AnimatePresence mode="wait">
                                     {activeTab === "workout" ? (
@@ -146,13 +205,14 @@ export default function AppPage() {
                                 </AnimatePresence>
                             </div>
 
+                            {/* Motivation Quote */}
                             <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 }}
-                                className="mt-16 p-8 border border-neutral-200 dark:border-neutral-800 text-center"
+                                className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:from-purple-500/5 dark:to-pink-500/5 rounded-2xl p-8 text-center border border-purple-200 dark:border-purple-900"
                             >
-                                <p className="text-sm font-light text-neutral-600 dark:text-neutral-400 italic">
+                                <p className="text-lg font-medium text-neutral-700 dark:text-neutral-300 italic">
                                     "{plan.motivation}"
                                 </p>
                             </motion.div>
@@ -165,16 +225,16 @@ export default function AppPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="mt-8 sm:mt-16 p-6 sm:p-8 border border-neutral-200 dark:border-neutral-800 text-center"
+                    className="mt-12 bg-white dark:bg-neutral-900 rounded-2xl p-8 text-center border border-neutral-200 dark:border-neutral-800 shadow-lg"
                 >
                     <div className="flex items-center justify-center gap-2 mb-3">
-                        <Sparkles className="w-4 h-4 text-neutral-400" />
-                        <h3 className="text-xs font-light uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                        <Sparkles className="w-5 h-5 text-purple-500" />
+                        <h3 className="text-sm font-semibold uppercase tracking-wider gradient-text">
                             Daily Motivation
                         </h3>
-                        <Sparkles className="w-4 h-4 text-neutral-400" />
+                        <Sparkles className="w-5 h-5 text-pink-500" />
                     </div>
-                    <p className="text-sm sm:text-base font-light text-neutral-700 dark:text-neutral-300">
+                    <p className="text-base sm:text-lg font-light text-neutral-700 dark:text-neutral-300">
                         {dailyQuote || "Loading inspiration..."}
                     </p>
                 </motion.div>
