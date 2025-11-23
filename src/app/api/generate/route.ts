@@ -50,18 +50,57 @@ export async function POST(req: Request) {
             "day": "Day 1",
             "focus": "Chest and Triceps",
             "exercises": [
-              { "name": "Push-ups", "sets": "3", "reps": "12", "rest": "60s", "notes": "Keep back straight" }
+              { 
+                "name": "Push-ups", 
+                "sets": "3", 
+                "reps": "12", 
+                "rest": "60s", 
+                "notes": "Keep back straight",
+                "videoUrl": "https://www.youtube.com/watch?v=example" 
+              }
             ]
           }
         ],
         "dietPlan": [
           {
             "day": "Day 1",
-            "breakfast": { "name": "Poha", "description": "Flattened rice with peanuts and spices", "calories": "300", "protein": "10g", "carbs": "50g", "fats": "8g" },
-            "lunch": { "name": "Dal Rice with Sabzi", "description": "Yellow dal, steamed rice, and mix veg curry", "calories": "500", "protein": "20g", "carbs": "70g", "fats": "10g" },
-            "dinner": { "name": "Grilled Chicken Curry with Roti", "description": "Chicken breast curry with 2 whole wheat rotis", "calories": "450", "protein": "35g", "carbs": "40g", "fats": "12g" },
+            "breakfast": { 
+              "name": "Poha", 
+              "description": "Flattened rice with peanuts and spices", 
+              "calories": "300", 
+              "protein": "10g", 
+              "carbs": "50g", 
+              "fats": "8g",
+              "recipeUrl": "https://www.example.com/poha-recipe"
+            },
+            "lunch": { 
+              "name": "Dal Rice with Sabzi", 
+              "description": "Yellow dal, steamed rice, and mix veg curry", 
+              "calories": "500", 
+              "protein": "20g", 
+              "carbs": "70g", 
+              "fats": "10g",
+              "recipeUrl": "https://www.example.com/dal-rice-recipe"
+            },
+            "dinner": { 
+              "name": "Grilled Chicken Curry with Roti", 
+              "description": "Chicken breast curry with 2 whole wheat rotis", 
+              "calories": "450", 
+              "protein": "35g", 
+              "carbs": "40g", 
+              "fats": "12g",
+              "recipeUrl": "https://www.example.com/chicken-curry-recipe"
+            },
             "snacks": [
-               { "name": "Roasted Chana", "description": "Spiced roasted chickpeas", "calories": "150", "protein": "8g", "carbs": "20g", "fats": "4g" }
+               { 
+                 "name": "Roasted Chana", 
+                 "description": "Spiced roasted chickpeas", 
+                 "calories": "150", 
+                 "protein": "8g", 
+                 "carbs": "20g", 
+                 "fats": "4g",
+                 "recipeUrl": "https://www.example.com/roasted-chana-recipe"
+               }
             ]
           }
         ],
@@ -69,9 +108,10 @@ export async function POST(req: Request) {
         "motivation": "Consistency is the key to transformation!"
       }
       
+      IMPORTANT: Include real YouTube video URLs for each exercise tutorial and recipe blog URLs (like Veg Recipes of India, Cooking Shooking, etc.) for each meal.
       Ensure the plan is detailed, culturally appropriate for Indian users, and suitable for the user's level and goal. 
       For Non-Veg preference, alternate between vegetarian and non-vegetarian meals throughout the week - don't make every meal non-veg.
-      Provide complete 7 days of workouts and diets.
+      Provide complete 7 days of workouts and diets with video and recipe URLs.
       Do not include any markdown formatting like \`\`\`json. Just return the raw JSON string.
     `;
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { DailyWorkout } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Loader2, ImageIcon, Volume2, VolumeX, Zap } from "lucide-react";
+import { X, Loader2, ImageIcon, Volume2, VolumeX, Zap, ExternalLink, Play } from "lucide-react";
 
 interface WorkoutPlanProps {
     plan: DailyWorkout[];
@@ -11,6 +11,7 @@ interface WorkoutPlanProps {
 
 export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
     const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
+    const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
@@ -22,8 +23,9 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
         }
     }, []);
 
-    const handleExerciseClick = async (exerciseName: string) => {
+    const handleExerciseClick = async (exerciseName: string, videoUrl?: string) => {
         setSelectedExercise(exerciseName);
+        setSelectedVideoUrl(videoUrl || null);
         setImageUrl(null);
         setLoading(true);
 
@@ -81,7 +83,7 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={handleSpeak}
-                    className="p-3 rounded-full gradient-primary text-white shadow-lg hover:shadow-xl transition-shadow"
+                    className="p-3 rounded-full gradient-primary shadow-lg hover:shadow-xl transition-shadow"
                     aria-label="Read workout plan"
                 >
                     {isSpeaking ? (
@@ -116,9 +118,24 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
                                 <X className="w-5 h-5" />
                             </button>
                             <h3 className="text-xl font-bold mb-4 pr-12">{selectedExercise}</h3>
-                            <div className="aspect-video bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center overflow-hidden">
+
+                            {/* Video Tutorial Button */}
+                            {selectedVideoUrl && (
+                                <a
+                                    href={selectedVideoUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-4 py-2 mb-4 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors text-sm font-medium"
+                                >
+                                    <Play className="w-4 h-4" />
+                                    Watch Tutorial
+                                    <ExternalLink className="w-3 h-3" />
+                                </a>
+                            )}
+
+                            <div className="aspect-video bg-neutral-100 dark:bg-neutral-800 rounded-2xl flex items-center justify-center overflow-hidden">
                                 {loading ? (
-                                    <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                                    <Loader2 className="w-8 h-8 animate-spin text-neutral-500" />
                                 ) : imageUrl ? (
                                     <img src={imageUrl} alt={selectedExercise} className="w-full h-full object-cover" />
                                 ) : (
@@ -140,11 +157,11 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
                         transition={{ delay: index * 0.1, duration: 0.4 }}
                         className="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-lg border border-neutral-200 dark:border-neutral-800 hover:shadow-xl transition-shadow"
                     >
-                        {/* Day Header */}
-                        <div className="relative p-6 gradient-primary">
+                        {/* Day Header - gradient only in dark mode */}
+                        <div className="relative p-6 bg-neutral-100 dark:bg-gradient-to-r dark:from-neutral-800 dark:to-neutral-700">
                             <div className="relative z-10">
-                                <h3 className="text-xl font-bold text-white">{day.day}</h3>
-                                <p className="text-white/90 text-sm uppercase tracking-wider mt-1 flex items-center gap-2">
+                                <h3 className="text-xl font-bold text-black dark:text-white">{day.day}</h3>
+                                <p className="text-neutral-600 dark:text-neutral-300 text-sm uppercase tracking-wider mt-1 flex items-center gap-2">
                                     <Zap className="w-4 h-4" />
                                     {day.focus}
                                 </p>
@@ -159,26 +176,32 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: index * 0.1 + i * 0.05 }}
-                                    onClick={() => handleExerciseClick(exercise.name)}
-                                    className="group relative p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 cursor-pointer transition-all duration-300 border border-transparent hover:border-purple-200 dark:hover:border-purple-800"
+                                    onClick={() => handleExerciseClick(exercise.name, exercise.videoUrl)}
+                                    className="group relative p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer transition-all duration-300 border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600"
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
-                                            <h4 className="font-semibold text-lg group-hover:gradient-text transition-all">
+                                            <h4 className="font-semibold text-lg text-black dark:text-white">
                                                 {i + 1}. {exercise.name}
                                             </h4>
                                             {exercise.notes && (
                                                 <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">{exercise.notes}</p>
                                             )}
-                                            <div className="flex gap-4 mt-3 text-sm text-neutral-500 dark:text-neutral-500">
+                                            <div className="flex gap-4 mt-3 text-sm text-neutral-600 dark:text-neutral-400">
                                                 <span className="font-medium">Sets: {exercise.sets}</span>
                                                 <span className="font-medium">Reps: {exercise.reps}</span>
                                                 <span className="font-medium">Rest: {exercise.rest}</span>
                                             </div>
+                                            {exercise.videoUrl && (
+                                                <div className="flex items-center gap-1 mt-2 text-xs text-neutral-500 dark:text-neutral-500">
+                                                    <Play className="w-3 h-3" />
+                                                    <span>Video tutorial available</span>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-4">
-                                            <div className="p-2 rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
-                                                <ImageIcon className="w-5 h-5 text-white" />
+                                            <div className="p-2 rounded-full bg-neutral-200 dark:bg-neutral-700">
+                                                <ImageIcon className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
                                             </div>
                                         </div>
                                     </div>

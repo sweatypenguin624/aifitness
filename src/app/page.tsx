@@ -65,10 +65,9 @@ export default function LandingPage() {
             >
               <Link
                 href="/app"
-                className="group relative px-10 py-4 gradient-primary text-white text-lg font-medium rounded-full overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                className="px-10 py-4 bg-white text-black text-lg font-medium rounded-full border border-neutral-300 hover:bg-neutral-50 transition-all duration-300 hover:scale-105 hover:shadow-lg"
               >
-                <span className="relative z-10">Start Your Journey</span>
-                <div className="absolute inset-0 gradient-primary-hover opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                Start Your Journey
               </Link>
 
               <motion.div
@@ -147,12 +146,9 @@ export default function LandingPage() {
                 className="relative group"
               >
                 <div className="h-full bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-neutral-200 dark:border-neutral-800">
-                  {/* Gradient Border on Hover */}
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
-
                   <div className="relative z-10">
-                    <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6`}>
-                      <feature.icon className="w-8 h-8 text-white" />
+                    <div className="w-16 h-16 rounded-full bg-black dark:bg-white flex items-center justify-center mb-6">
+                      <feature.icon className="w-8 h-8 text-white dark:text-black" />
                     </div>
 
                     <h3 className="text-xl font-bold mb-4 text-black dark:text-white">{feature.title}</h3>
@@ -187,8 +183,8 @@ export default function LandingPage() {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 className="text-center"
               >
-                <div className="inline-block p-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 mb-4">
-                  <stat.icon className="w-6 h-6 text-white" />
+                <div className="inline-block p-4 rounded-full bg-black dark:bg-white mb-4">
+                  <stat.icon className="w-6 h-6 text-white dark:text-black" />
                 </div>
                 <div className="text-4xl font-bold gradient-text mb-2">{stat.value}</div>
                 <div className="text-neutral-600 dark:text-neutral-400">{stat.label}</div>
@@ -218,7 +214,7 @@ export default function LandingPage() {
 
             <Link
               href="/app"
-              className="inline-block px-12 py-5 gradient-primary text-white text-lg font-medium rounded-full hover:scale-105 hover:shadow-2xl transition-all duration-300"
+              className="inline-block px-12 py-5 bg-white text-black text-lg font-medium rounded-full border border-neutral-300 hover:bg-neutral-50 hover:scale-105 hover:shadow-lg transition-all duration-300"
             >
               Get Started Free
             </Link>

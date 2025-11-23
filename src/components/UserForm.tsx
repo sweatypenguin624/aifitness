@@ -13,9 +13,9 @@ interface UserFormProps {
 export default function UserForm({ onSubmit, isLoading }: UserFormProps) {
     const [formData, setFormData] = useState<UserData>({
         name: "",
-        age: 25,
+        age: "" as any,
         gender: "Male",
-        height: 170,
+        height: "" as any,
         weight: 70,
         goal: "Weight Loss",
         level: "Beginner",
@@ -69,6 +69,7 @@ export default function UserForm({ onSubmit, isLoading }: UserFormProps) {
                             value={formData.age}
                             onChange={handleChange}
                             className="w-full px-4 py-3 bg-transparent border-b border-neutral-300 dark:border-neutral-700 focus:border-black dark:focus:border-white outline-none transition-colors duration-300 text-sm"
+                            placeholder="Enter your age"
                         />
                     </div>
                     <div className="space-y-2">
@@ -93,6 +94,7 @@ export default function UserForm({ onSubmit, isLoading }: UserFormProps) {
                             value={formData.height}
                             onChange={handleChange}
                             className="w-full px-4 py-3 bg-transparent border-b border-neutral-300 dark:border-neutral-700 focus:border-black dark:focus:border-white outline-none transition-colors duration-300 text-sm"
+                            placeholder="Enter your height in cm"
                         />
                     </div>
                     <div className="space-y-2">

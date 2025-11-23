@@ -17,6 +17,7 @@ export interface Exercise {
     reps: string;
     rest: string;
     notes?: string;
+    videoUrl?: string;
 }
 
 export interface DailyWorkout {
@@ -28,10 +29,11 @@ export interface DailyWorkout {
 export interface Meal {
     name: string;
     description: string;
-    calories?: string;
-    protein?: string;
-    carbs?: string;
-    fats?: string;
+    calories: string;
+    protein: string;
+    carbs: string;
+    fats: string;
+    recipeUrl?: string;
 }
 
 export interface DailyDiet {
