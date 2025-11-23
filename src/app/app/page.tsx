@@ -120,7 +120,7 @@ export default function AppPage() {
                                         </div>
                                     </button>
                                     <button
-                                        onClick={() => exportToPDF("plan-content", "fitness-plan")}
+                                        onClick={() => exportToPDF(plan, "fitness-plan")}
                                         className="px-6 py-3 text-sm font-light tracking-wide bg-transparent border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600 transition-all duration-300"
                                         aria-label="Export to PDF"
                                     >
