@@ -147,7 +147,7 @@ export default function AppPage() {
                                         <button
                                             onClick={() => setActiveTab("workout")}
                                             className={`relative z-10 px-8 py-3 text-sm font-medium rounded-full transition-colors ${activeTab === "workout"
-                                                    ? "text-white"
+                                                    ? "text-black"
                                                     : "text-neutral-600 dark:text-neutral-400"
                                                 }`}
                                         >
@@ -159,7 +159,7 @@ export default function AppPage() {
                                         <button
                                             onClick={() => setActiveTab("diet")}
                                             className={`relative z-10 px-8 py-3 text-sm font-medium rounded-full transition-colors ${activeTab === "diet"
-                                                    ? "text-white"
+                                                    ? "text-black"
                                                     : "text-neutral-600 dark:text-neutral-400"
                                                 }`}
                                         >
