@@ -8,7 +8,8 @@ import { GeneratedPlan, UserData } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dumbbell, Utensils, RefreshCw, Download, Sparkles, ArrowLeft } from "lucide-react";
 import { exportToPDF } from "@/lib/utils";
-import { ModeToggle } from "@/components/ModeToggle";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 
 export default function AppPage() {
@@ -18,10 +19,20 @@ export default function AppPage() {
     const [dailyQuote, setDailyQuote] = useState<string>("");
 
     useEffect(() => {
-        const savedPlan = localStorage.getItem("ai-fitness-plan");
-        if (savedPlan) {
-            setPlan(JSON.parse(savedPlan));
-        }
+        // Fetch saved plan from DB
+        const fetchPlan = async () => {
+            try {
+                const res = await fetch("/api/plan");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data) setPlan(data);
+                }
+            } catch (error) {
+                console.error("Error fetching plan:", error);
+            }
+        };
+
+        fetchPlan();
 
         // Fetch daily quote
         fetch("/api/quote")
@@ -30,15 +41,17 @@ export default function AppPage() {
             .catch(() => setDailyQuote("Your only limit is you."));
     }, []);
 
-    useEffect(() => {
-        if (plan) {
-            localStorage.setItem("ai-fitness-plan", JSON.stringify(plan));
-        }
-    }, [plan]);
+    // Remove the localStorage useEffect
+    // useEffect(() => {
+    //     if (plan) {
+    //         localStorage.setItem("ai-fitness-plan", JSON.stringify(plan));
+    //     }
+    // }, [plan]);
 
     const handleGenerate = async (userData: UserData) => {
         setLoading(true);
         try {
+            // 1. Generate Plan
             const res = await fetch("/api/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -47,8 +60,16 @@ export default function AppPage() {
 
             if (!res.ok) throw new Error("Failed to generate plan");
 
-            const data = await res.json();
-            setPlan(data);
+            const generatedPlan = await res.json();
+            setPlan(generatedPlan);
+
+            // 2. Save Plan to DB
+            await fetch("/api/plan", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(generatedPlan),
+            });
+
         } catch (error) {
             console.error(error);
             alert("Something went wrong! Please try again.");
@@ -60,17 +81,9 @@ export default function AppPage() {
     return (
         <main className="min-h-screen bg-neutral-50 dark:bg-black text-black dark:text-white transition-colors duration-500">
             {/* Navigation */}
-            <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800">
-                <div className="container mx-auto px-4 sm:px-6 py-4 max-w-7xl flex justify-between items-center">
-                    <Link href="/" className="flex items-center gap-2 text-lg font-bold gradient-text hover:opacity-80 transition-opacity">
-                        <ArrowLeft className="w-5 h-5" />
-                        AI Fitness Coach
-                    </Link>
-                    <ModeToggle />
-                </div>
-            </nav>
+            <Navbar />
 
-            <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-7xl">
+            <div className="container mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-12 max-w-7xl">
                 <AnimatePresence mode="wait">
                     {!plan ? (
                         <motion.div
@@ -147,8 +160,8 @@ export default function AppPage() {
                                         <button
                                             onClick={() => setActiveTab("workout")}
                                             className={`relative z-10 px-8 py-3 text-sm font-medium rounded-full transition-colors ${activeTab === "workout"
-                                                    ? "text-black"
-                                                    : "text-neutral-600 dark:text-neutral-400"
+                                                ? "text-black"
+                                                : "text-neutral-600 dark:text-neutral-400"
                                                 }`}
                                         >
                                             <div className="flex items-center gap-2">
@@ -159,8 +172,8 @@ export default function AppPage() {
                                         <button
                                             onClick={() => setActiveTab("diet")}
                                             className={`relative z-10 px-8 py-3 text-sm font-medium rounded-full transition-colors ${activeTab === "diet"
-                                                    ? "text-black"
-                                                    : "text-neutral-600 dark:text-neutral-400"
+                                                ? "text-black"
+                                                : "text-neutral-600 dark:text-neutral-400"
                                                 }`}
                                         >
                                             <div className="flex items-center gap-2">
@@ -220,25 +233,9 @@ export default function AppPage() {
                     )}
                 </AnimatePresence>
 
-                {/* Daily Motivation Quote - Always visible at bottom */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="mt-12 bg-white dark:bg-neutral-900 rounded-2xl p-8 text-center border border-neutral-200 dark:border-neutral-800 shadow-lg"
-                >
-                    <div className="flex items-center justify-center gap-2 mb-3">
-                        <Sparkles className="w-5 h-5 text-purple-500" />
-                        <h3 className="text-sm font-semibold uppercase tracking-wider gradient-text">
-                            Daily Motivation
-                        </h3>
-                        <Sparkles className="w-5 h-5 text-pink-500" />
-                    </div>
-                    <p className="text-base sm:text-lg font-light text-neutral-700 dark:text-neutral-300">
-                        {dailyQuote || "Loading inspiration..."}
-                    </p>
-                </motion.div>
+
             </div>
-        </main>
+            <Footer />
+        </main >
     );
 }

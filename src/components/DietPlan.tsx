@@ -113,6 +113,12 @@ export default function DietPlan({ plan }: DietPlanProps) {
         </motion.div>
     );
 
+    const [expandedDay, setExpandedDay] = useState<number | null>(0);
+
+    const toggleDay = (index: number) => {
+        setExpandedDay(expandedDay === index ? null : index);
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -122,12 +128,12 @@ export default function DietPlan({ plan }: DietPlanProps) {
         >
             {/* Header */}
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold gradient-text">Diet Plan</h2>
+                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-emerald-500">Diet Plan</h2>
                 <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={handleSpeak}
-                    className="p-3 rounded-full gradient-primary shadow-lg hover:shadow-xl transition-shadow"
+                    className="p-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl transition-shadow"
                     aria-label="Read diet plan"
                 >
                     {isSpeaking ? (
@@ -191,31 +197,70 @@ export default function DietPlan({ plan }: DietPlanProps) {
                 )}
             </AnimatePresence>
 
-            {/* Diet Days */}
-            <div className="grid gap-6">
+            {/* Diet Days Accordion */}
+            <div className="grid gap-4">
                 {plan.map((day, index) => (
                     <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1, duration: 0.4 }}
-                        className="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-lg border border-neutral-200 dark:border-neutral-800 hover:shadow-xl transition-shadow"
+                        transition={{ delay: index * 0.1 }}
+                        className={`rounded-2xl overflow-hidden border transition-all duration-300 ${expandedDay === index
+                                ? "bg-white dark:bg-neutral-900 border-green-500 dark:border-green-500 shadow-lg ring-1 ring-green-500/20"
+                                : "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 hover:border-green-300 dark:hover:border-green-700"
+                            }`}
                     >
-                        {/* Day Header - matching WorkoutPlan style */}
-                        <div className="p-6 bg-neutral-100 dark:bg-gradient-to-r dark:from-neutral-800 dark:to-neutral-700 border-b border-neutral-200 dark:border-neutral-700">
-                            <h3 className="text-xl font-bold text-black dark:text-white">{day.day}</h3>
-                        </div>
+                        <button
+                            onClick={() => toggleDay(index)}
+                            className="w-full flex items-center justify-between p-6 text-left"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold transition-colors ${expandedDay === index
+                                        ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                                        : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500"
+                                    }`}>
+                                    {index + 1}
+                                </div>
+                                <h3 className={`text-lg font-bold transition-colors ${expandedDay === index ? "text-black dark:text-white" : "text-neutral-700 dark:text-neutral-300"
+                                    }`}>
+                                    {day.day}
+                                </h3>
+                            </div>
+                            <div className={`p-2 rounded-full transition-transform duration-300 ${expandedDay === index ? "rotate-180 bg-neutral-100 dark:bg-neutral-800" : ""}`}>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-neutral-500">
+                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </div>
+                        </button>
 
-                        {/* Meals */}
-                        <div className="p-6 space-y-4">
-                            <MealCard meal={day.breakfast} title="Breakfast" icon={Coffee} />
-                            <MealCard meal={day.lunch} title="Lunch" icon={Sun} />
-                            <MealCard meal={day.dinner} title="Dinner" icon={Moon} />
+                        <AnimatePresence>
+                            {expandedDay === index && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                >
+                                    <div className="p-6 pt-0 space-y-4 border-t border-neutral-100 dark:border-neutral-800/50 mt-2">
+                                        <div className="h-4"></div> {/* Spacer */}
+                                        <MealCard meal={day.breakfast} title="Breakfast" icon={Coffee} />
+                                        <MealCard meal={day.lunch} title="Lunch" icon={Sun} />
+                                        <MealCard meal={day.dinner} title="Dinner" icon={Moon} />
 
-                            {day.snacks.map((snack, i) => (
-                                <MealCard key={i} meal={snack} title={`Snack ${i + 1}`} icon={Coffee} />
-                            ))}
-                        </div>
+                                        {day.snacks.length > 0 && (
+                                            <div className="pt-2">
+                                                <h4 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-3 pl-1">Snacks</h4>
+                                                <div className="space-y-4">
+                                                    {day.snacks.map((snack, i) => (
+                                                        <MealCard key={i} meal={snack} title={`Snack ${i + 1}`} icon={Coffee} />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 ))}
             </div>

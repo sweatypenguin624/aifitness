@@ -43,6 +43,12 @@ export async function POST(req: Request) {
       - Mention Indian spices and preparation methods (e.g., "tadka dal", "stir-fried with jeera")
       - Consider meal timings common in India (breakfast 8-9am, lunch 1-2pm, dinner 8-9pm)
 
+      CRITICAL INSTRUCTIONS FOR VARIETY:
+      - Ensure HIGH VARIETY in meals. Do not repeat the same breakfast, lunch, or dinner more than once if possible.
+      - Introduce different Indian cuisines (North Indian, South Indian, Maharashtrian, etc.) to keep the diet interesting.
+      - For workouts, ensure a good mix of exercises. If a muscle group is repeated, vary the exercises (e.g., Flat Bench Press on Monday, Incline Dumbbell Press on Thursday).
+      - Avoid repetitive descriptions. Make each day feel unique and engaging.
+
       Return the response strictly in the following JSON format:
       {
         "workoutPlan": [

@@ -69,6 +69,12 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
         setIsSpeaking(true);
     };
 
+    const [expandedDay, setExpandedDay] = useState<number | null>(0);
+
+    const toggleDay = (index: number) => {
+        setExpandedDay(expandedDay === index ? null : index);
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -78,12 +84,12 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
         >
             {/* Header */}
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold gradient-text">Workout Plan</h2>
+                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">Workout Plan</h2>
                 <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={handleSpeak}
-                    className="p-3 rounded-full gradient-primary shadow-lg hover:shadow-xl transition-shadow"
+                    className="p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-shadow"
                     aria-label="Read workout plan"
                 >
                     {isSpeaking ? (
@@ -147,67 +153,109 @@ export default function WorkoutPlan({ plan }: WorkoutPlanProps) {
                 )}
             </AnimatePresence>
 
-            {/* Workout Days */}
-            <div className="grid gap-6">
+            {/* Workout Days Accordion */}
+            <div className="grid gap-4">
                 {plan.map((day, index) => (
                     <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1, duration: 0.4 }}
-                        className="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-lg border border-neutral-200 dark:border-neutral-800 hover:shadow-xl transition-shadow"
+                        transition={{ delay: index * 0.1 }}
+                        className={`rounded-2xl overflow-hidden border transition-all duration-300 ${expandedDay === index
+                                ? "bg-white dark:bg-neutral-900 border-purple-500 dark:border-purple-500 shadow-lg ring-1 ring-purple-500/20"
+                                : "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 hover:border-purple-300 dark:hover:border-purple-700"
+                            }`}
                     >
-                        {/* Day Header - gradient only in dark mode */}
-                        <div className="relative p-6 bg-neutral-100 dark:bg-gradient-to-r dark:from-neutral-800 dark:to-neutral-700">
-                            <div className="relative z-10">
-                                <h3 className="text-xl font-bold text-black dark:text-white">{day.day}</h3>
-                                <p className="text-neutral-600 dark:text-neutral-300 text-sm uppercase tracking-wider mt-1 flex items-center gap-2">
-                                    <Zap className="w-4 h-4" />
-                                    {day.focus}
-                                </p>
+                        <button
+                            onClick={() => toggleDay(index)}
+                            className="w-full flex items-center justify-between p-6 text-left"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold transition-colors ${expandedDay === index
+                                        ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                                        : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500"
+                                    }`}>
+                                    {index + 1}
+                                </div>
+                                <div>
+                                    <h3 className={`text-lg font-bold transition-colors ${expandedDay === index ? "text-black dark:text-white" : "text-neutral-700 dark:text-neutral-300"
+                                        }`}>
+                                        {day.day}
+                                    </h3>
+                                    <p className="text-sm text-neutral-500 dark:text-neutral-400 flex items-center gap-2">
+                                        <Zap className="w-3 h-3" />
+                                        {day.focus}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
+                            <div className={`p-2 rounded-full transition-transform duration-300 ${expandedDay === index ? "rotate-180 bg-neutral-100 dark:bg-neutral-800" : ""}`}>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-neutral-500">
+                                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </div>
+                        </button>
 
-                        {/* Exercises */}
-                        <div className="p-6 space-y-4">
-                            {day.exercises.map((exercise, i) => (
+                        <AnimatePresence>
+                            {expandedDay === index && (
                                 <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.1 + i * 0.05 }}
-                                    onClick={() => handleExerciseClick(exercise.name, exercise.videoUrl)}
-                                    className="group relative p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer transition-all duration-300 border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600"
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3, ease: "easeInOut" }}
                                 >
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <h4 className="font-semibold text-lg text-black dark:text-white">
-                                                {i + 1}. {exercise.name}
-                                            </h4>
-                                            {exercise.notes && (
-                                                <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">{exercise.notes}</p>
-                                            )}
-                                            <div className="flex gap-4 mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-                                                <span className="font-medium">Sets: {exercise.sets}</span>
-                                                <span className="font-medium">Reps: {exercise.reps}</span>
-                                                <span className="font-medium">Rest: {exercise.rest}</span>
-                                            </div>
-                                            {exercise.videoUrl && (
-                                                <div className="flex items-center gap-1 mt-2 text-xs text-neutral-500 dark:text-neutral-500">
-                                                    <Play className="w-3 h-3" />
-                                                    <span>Video tutorial available</span>
+                                    <div className="p-6 pt-0 space-y-4 border-t border-neutral-100 dark:border-neutral-800/50 mt-2">
+                                        <div className="h-4"></div> {/* Spacer */}
+                                        {day.exercises.map((exercise, i) => (
+                                            <motion.div
+                                                key={i}
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: i * 0.05 }}
+                                                onClick={() => handleExerciseClick(exercise.name, exercise.videoUrl)}
+                                                className="group relative p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/30 hover:bg-purple-50 dark:hover:bg-purple-900/10 cursor-pointer transition-all duration-200 border border-transparent hover:border-purple-200 dark:hover:border-purple-800"
+                                            >
+                                                <div className="flex items-start justify-between">
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="text-xs font-bold px-2 py-0.5 rounded bg-white dark:bg-neutral-800 text-neutral-500 border border-neutral-200 dark:border-neutral-700">
+                                                                Ex {i + 1}
+                                                            </span>
+                                                            <h4 className="font-semibold text-base text-black dark:text-white">
+                                                                {exercise.name}
+                                                            </h4>
+                                                        </div>
+
+                                                        {exercise.notes && (
+                                                            <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3 pl-1">{exercise.notes}</p>
+                                                        )}
+
+                                                        <div className="flex flex-wrap gap-3 text-xs">
+                                                            <div className="flex items-center gap-1 px-2 py-1 rounded bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+                                                                <span className="text-neutral-400">Sets</span>
+                                                                <span className="font-semibold text-neutral-700 dark:text-neutral-300">{exercise.sets}</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-1 px-2 py-1 rounded bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+                                                                <span className="text-neutral-400">Reps</span>
+                                                                <span className="font-semibold text-neutral-700 dark:text-neutral-300">{exercise.reps}</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-1 px-2 py-1 rounded bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+                                                                <span className="text-neutral-400">Rest</span>
+                                                                <span className="font-semibold text-neutral-700 dark:text-neutral-300">{exercise.rest}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="self-center opacity-0 group-hover:opacity-100 transition-opacity ml-4">
+                                                        <div className="p-2 rounded-full bg-white dark:bg-neutral-700 shadow-sm">
+                                                            <ImageIcon className="w-4 h-4 text-purple-500" />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-4">
-                                            <div className="p-2 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                                <ImageIcon className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
-                                            </div>
-                                        </div>
+                                            </motion.div>
+                                        ))}
                                     </div>
                                 </motion.div>
-                            ))}
-                        </div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 ))}
             </div>

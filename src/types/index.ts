@@ -50,3 +50,27 @@ export interface GeneratedPlan {
     tips: string[];
     motivation: string;
 }
+
+export interface WorkoutLog {
+    id: string;
+    date: string;
+    exercise: string;
+    sets: number;
+    reps: number;
+    weight: number;
+}
+
+export interface MealLog {
+    id: string;
+    date: string;
+    name: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+}
+
+export interface WeightLog {
+    date: string;
+    weight: number;
+}
